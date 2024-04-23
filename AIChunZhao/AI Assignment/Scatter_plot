@@ -1,0 +1,52 @@
+import numpy as np 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import GradientBoostingRegressor
+import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score, mean_squared_error
+
+
+airbnb_data = pd.read_csv("C:\\Download\\AI Assignment\\train.csv")
+
+
+features = pd.get_dummies(airbnb_data[['property_type', 'room_type', 'bed_type', 'city', 'neighbourhood', 'host_response_rate', 'cleaning_fee', 'host_has_profile_pic']])
+
+
+numerical_features = airbnb_data[['bathrooms', 'accommodates', 'number_of_reviews', 'review_scores_rating', 'bedrooms', 'beds', 'longitude', 'latitude']]
+features = pd.concat([numerical_features, features], axis=1)
+
+# Target variable
+target = airbnb_data['log_price']  
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42)
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Initialize and train the Gradient Boosting Regressor model
+gbr = GradientBoostingRegressor(n_estimators=100, max_depth=3, learning_rate=0.1, random_state=42)
+gbr.fit(X_train_scaled, y_train)
+
+# predictions
+y_pred = gbr.predict(X_test_scaled)
+
+# Evaluate model performance
+r2 = r2_score(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+
+print("R-squared:", r2)
+print("Mean Squared Error:", mse)
+
+
+# Scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, color='blue', alpha=0.5)
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linewidth=2)  # Diagonal line
+plt.title('Actual vs. Predicted Log Prices')
+plt.xlabel('Actual Log Price')
+plt.ylabel('Predicted Log Price')
+plt.show()
