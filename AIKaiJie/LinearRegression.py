@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
 # Load data
-data = pd.read_csv('C:/Users/ASUS/Downloads/Artificial_intelligence/Assignment/train.csv')
+data = pd.read_csv('C:/Users/User/OneDrive/Documents/AI_Assignment/train.csv')
 
 # Select relevant features and target variable
 features = ['property_type', 'room_type', 'bathrooms','amenities', 'bedrooms', 'beds', 'city', 'accommodates', 'cleaning_fee', 'cancellation_policy', 'number_of_reviews',  'review_scores_rating', 'latitude', 'longitude', 'instant_bookable', 'host_since', 'host_identity_verified']
