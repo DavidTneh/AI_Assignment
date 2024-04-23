@@ -123,6 +123,9 @@ plt.xticks(rotation=90)  # Rotate x-axis labels for better readability
 plt.ylabel('Log Price')
 plt.show()
 
+print(df.tail(1))
+
+
 host_selected = ['host_since','review_scores_rating']
 
 df_selected1 = df.loc[:, host_selected].copy()  # Use .loc to avoid SettingWithCopyWarning
