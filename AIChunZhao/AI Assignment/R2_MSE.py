@@ -6,7 +6,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import r2_score, mean_squared_error
 
 
-airbnb_data = pd.read_csv("C:\\Download\\AI Assignment\\train.csv")
+airbnb_data = pd.read_csv("C:/Users/User/OneDrive/Documents/AI_Assignment/train.csv")
 
 
 features = pd.get_dummies(airbnb_data[['property_type', 'room_type', 'amenities','bed_type','cancellation_policy','cleaning_fee',
