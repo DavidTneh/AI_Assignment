@@ -1,0 +1,33 @@
+/* Resetting default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+header {
+    /* Header styles go here */
+}
+
+main {
+    padding: 20px;
+}
+
+.stays {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stay {
+    /* Individual stay card styles go here */
+}
+
+.footer {
+    /* Footer styles go here */
+}
