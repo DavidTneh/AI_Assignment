@@ -10,9 +10,7 @@ body {
     background-color: #f0f0f0;
 }
 
-header {
-    /* Header styles go here */
-}
+
 
 main {
     padding: 20px;
@@ -24,10 +22,4 @@ main {
     gap: 20px;
 }
 
-.stay {
-    /* Individual stay card styles go here */
-}
 
-.footer {
-    /* Footer styles go here */
-}
