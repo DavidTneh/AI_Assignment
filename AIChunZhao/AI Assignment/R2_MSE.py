@@ -1,39 +1,51 @@
 import numpy as np 
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.compose import ColumnTransformer
 from sklearn.metrics import r2_score, mean_squared_error
 
+# Load the dataset
+airbnb_data = pd.read_csv("C:\\Download\\AI Assignment\\train.csv")
 
-airbnb_data = pd.read_csv("C:/Users/User/OneDrive/Documents/AI_Assignment/train.csv")
+# Define selected columns
+selected_columns = ['log_price', 'property_type', 'room_type', 'accommodates', 'amenities', 
+                    'bathrooms', 'bed_type', 'cancellation_policy', 'cleaning_fee', 
+                    'city', 'host_since', 'latitude', 'longitude', 'number_of_reviews', 
+                    'review_scores_rating', 'bedrooms', 'beds', 'instant_bookable', 'host_identity_verified']
 
+# Subset the DataFrame
+df_selected = airbnb_data[selected_columns]
 
-features = pd.get_dummies(airbnb_data[['property_type', 'room_type', 'amenities','bed_type','cancellation_policy','cleaning_fee',
-                                       'city','host_since','instant_bookable','host_identity_verified']])
+# Identify numeric and non-numeric columns
+numeric_columns = df_selected.select_dtypes(include=['number']).columns
+non_numeric_columns = df_selected.select_dtypes(exclude=['number']).columns
 
-numerical_features = airbnb_data[['accommodates','bathrooms','latitude','longitude','number_of_reviews',
-                                  'review_scores_rating','bedrooms','beds']]
+# Create a ColumnTransformer to apply OneHotEncoding to non-numeric features
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('onehot', OneHotEncoder(handle_unknown='ignore'), non_numeric_columns)
+    ],
+    remainder='passthrough'
+)
 
-features = pd.concat([numerical_features, features], axis=1)
+# Separate features and target variable
+X = df_selected.drop('log_price', axis=1)
+y = df_selected['log_price']
 
-# Target variable
-target = airbnb_data['log_price']  
+# Preprocess the data
+X_processed = preprocessor.fit_transform(X)
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42)
-
-# Feature scaling
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.2, random_state=42)
 
 # Initialize and train the Gradient Boosting Regressor model
 gbr = GradientBoostingRegressor(n_estimators=100, max_depth=3, learning_rate=0.1, random_state=42)
-gbr.fit(X_train_scaled, y_train)
+gbr.fit(X_train, y_train)
 
-# predictions
-y_pred = gbr.predict(X_test_scaled)
+# Make predictions
+y_pred = gbr.predict(X_test)
 
 # Evaluate model performance
 r2 = r2_score(y_test, y_pred)
