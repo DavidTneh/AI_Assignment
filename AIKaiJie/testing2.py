@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import Ridge
 
 # Load data
-data = pd.read_csv('C:/Users/ASUS/Downloads/Artificial_intelligence/Assignment/train.csv')
+data = pd.read_csv('C:/Users/User/OneDrive/Documents/AI_Assignment/train.csv')
 
 # Select relevant features and target variable
 features = ['property_type', 'room_type', 'bathrooms', 'amenities', 'bedrooms', 'beds', 
