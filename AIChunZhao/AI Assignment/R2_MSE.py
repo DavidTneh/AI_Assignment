@@ -6,36 +6,20 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.compose import ColumnTransformer
 from sklearn.metrics import r2_score, mean_squared_error
 
-# Load the dataset
-airbnb_data = pd.read_csv("C:\\Download\\AI Assignment\\train.csv")
 
-# Define selected columns
-selected_columns = ['log_price', 'property_type', 'room_type', 'accommodates', 'amenities', 
-                    'bathrooms', 'bed_type', 'cancellation_policy', 'cleaning_fee', 
-                    'city', 'host_since', 'latitude', 'longitude', 'number_of_reviews', 
-                    'review_scores_rating', 'bedrooms', 'beds', 'instant_bookable', 'host_identity_verified']
+airbnb_data = pd.read_csv("C:/Users/User/OneDrive/Documents/AI_Assignment/train.csv")
 
-# Subset the DataFrame
-df_selected = airbnb_data[selected_columns]
 
-# Identify numeric and non-numeric columns
-numeric_columns = df_selected.select_dtypes(include=['number']).columns
-non_numeric_columns = df_selected.select_dtypes(exclude=['number']).columns
+features = pd.get_dummies(airbnb_data[['property_type', 'room_type', 'amenities','bed_type','cancellation_policy','cleaning_fee',
+                                       'city','host_since','instant_bookable','host_identity_verified']])
 
-# Create a ColumnTransformer to apply OneHotEncoding to non-numeric features
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('onehot', OneHotEncoder(handle_unknown='ignore'), non_numeric_columns)
-    ],
-    remainder='passthrough'
-)
+numerical_features = airbnb_data[['accommodates','bathrooms','latitude','longitude','number_of_reviews',
+                                  'review_scores_rating','bedrooms','beds']]
 
-# Separate features and target variable
-X = df_selected.drop('log_price', axis=1)
-y = df_selected['log_price']
+features = pd.concat([numerical_features, features], axis=1)
 
-# Preprocess the data
-X_processed = preprocessor.fit_transform(X)
+# Target variable
+target = airbnb_data['log_price']  
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.2, random_state=42)
