@@ -80,17 +80,27 @@ print('Mean Squared Error:', mse)
 r2 = rf.score(X_test, y_test)
 print('R-squared (R2):', r2)
 
-features_to_plot = ['property_type', 'room_type', 'accommodates']
-for feature_name in features_to_plot:
-    pdp_dist = pdp.pdp_isolate(model=rf, dataset=X_test, model_features=X.columns, feature=feature_name)
-    pdp.pdp_plot(pdp_dist, feature_name)
-    plt.title(f'Partial Dependence Plot for {feature_name}')
-    plt.show()
+# Initialize the Random Forest Regressor
+rf = RandomForestRegressor(n_estimators=100, max_depth=3, random_state=42)
 
-# Create interaction PDPs for selected pairs of features
-interactions = [('property_type', 'room_type'), ('property_type', 'accommodates'), ('room_type', 'accommodates')]
-for interaction_pair in interactions:
-    pdp_interaction = pdp.pdp_interact(model=rf, dataset=X_test, model_features=X.columns, features=interaction_pair)
-    pdp.pdp_interact_plot(pdp_interaction, interaction_pair, plot_type='grid', x_quantile=True)
-    plt.title(f'Interaction PDP for {interaction_pair}')
-    plt.show()
+# Train the model
+rf.fit(X_train, y_train)
+
+# Get feature importances
+feature_importances = rf.feature_importances_
+feature_names = list(X.columns)
+
+# Sort feature importances
+sorted_indices = np.argsort(feature_importances)[::-1]
+sorted_importances = feature_importances[sorted_indices]
+sorted_feature_names = [feature_names[i] for i in sorted_indices]
+
+# Plot the effect of top features on the log price
+plt.figure(figsize=(10, 6))
+plt.bar(range(len(feature_names)), sorted_importances)
+plt.xlabel('Feature')
+plt.ylabel('Importance')
+plt.title('Feature Importances')
+plt.xticks(range(len(feature_names)), sorted_feature_names, rotation=90, ha='right')
+plt.tight_layout()
+plt.show()
