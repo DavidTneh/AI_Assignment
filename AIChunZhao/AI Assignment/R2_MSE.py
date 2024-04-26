@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import numpy as np 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -7,22 +8,38 @@ from sklearn.compose import ColumnTransformer
 from sklearn.metrics import r2_score, mean_squared_error
 
 
-airbnb_data = pd.read_csv("C:/Users/User/OneDrive/Documents/AI_Assignment/train.csv")
+# Read the CSV file
+airbnb_data = pd.read_csv("C:\\Download\\AI Assignment\\train.csv")
 
+# Select only the specified columns
+selected_columns = ['log_price', 'property_type', 'room_type', 'accommodates', 'amenities', 
+                    'bathrooms', 'bed_type', 'cancellation_policy', 'cleaning_fee', 
+                    'city', 'host_since', 'latitude', 'longitude', 'number_of_reviews', 
+                    'review_scores_rating', 'bedrooms', 'beds', 'instant_bookable', 'host_identity_verified']
 
-features = pd.get_dummies(airbnb_data[['property_type', 'room_type', 'amenities','bed_type','cancellation_policy','cleaning_fee',
-                                       'city','host_since','instant_bookable','host_identity_verified']])
-
-numerical_features = airbnb_data[['accommodates','bathrooms','latitude','longitude','number_of_reviews',
-                                  'review_scores_rating','bedrooms','beds']]
-
-features = pd.concat([numerical_features, features], axis=1)
+df_selected = airbnb_data[selected_columns]
 
 # Target variable
-target = airbnb_data['log_price']  
+target = df_selected['log_price']
+
+# Features
+features = df_selected.drop(columns=['log_price'])
+
+# Preprocessing: OneHotEncoding for categorical variables and scaling for numerical variables
+numeric_features = features.select_dtypes(include=['number']).columns
+categorical_features = features.select_dtypes(exclude=['number']).columns
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features)
+    ])
+
+# Preprocess the data
+X_processed = preprocessor.fit_transform(features)
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_processed, target, test_size=0.2, random_state=42)
 
 # Initialize and train the Gradient Boosting Regressor model
 gbr = GradientBoostingRegressor(n_estimators=100, max_depth=3, learning_rate=0.1, random_state=42)
@@ -37,3 +54,4 @@ mse = mean_squared_error(y_test, y_pred)
 
 print("R-squared:", r2)
 print("Mean Squared Error:", mse)
+
