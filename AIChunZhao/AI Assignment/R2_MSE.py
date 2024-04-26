@@ -55,3 +55,20 @@ mse = mean_squared_error(y_test, y_pred)
 print("R-squared:", r2)
 print("Mean Squared Error:", mse)
 
+
+
+# Plotting R-squared and MSE
+plt.figure(figsize=(10, 6))
+
+# Plot R-squared
+plt.bar(['R-squared'], [r2], color='blue', alpha=0.5, label='R-squared')
+
+# Plot MSE
+plt.bar(['Mean Squared Error'], [mse], color='red', alpha=0.5, label='Mean Squared Error')
+
+plt.xlabel('Metrics')
+plt.ylabel('Value')
+plt.title('Evaluation Metrics')
+plt.legend()
+plt.grid(True)
+plt.show()

@@ -55,3 +55,12 @@ mse = mean_squared_error(y_test, y_pred)
 print("R-squared:", r2)
 print("Mean Squared Error:", mse)
 
+# Scatter plot of actual vs. predicted log prices
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, color='blue', alpha=0.5)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--', lw=2)
+plt.xlabel('Actual Log Prices')
+plt.ylabel('Predicted Log Prices')
+plt.title('Actual vs. Predicted Log Prices')
+plt.grid(True)
+plt.show()
