@@ -86,21 +86,26 @@ rf = RandomForestRegressor(n_estimators=100, max_depth=3, random_state=42)
 # Train the model
 rf.fit(X_train, y_train)
 
-# Get feature importances
-feature_importances = rf.feature_importances_
-feature_names = list(X.columns)
+# Drop non-numeric columns before computing correlation coefficients
+numeric_data = df[selected_columns].select_dtypes(include=['number'])
+# Compute correlation coefficients between features and target variable
+correlation_matrix = numeric_data.corr().abs()
+correlation_with_target = correlation_matrix['log_price'].drop('log_price')  # Drop target's correlation with itself
+correlation_with_target = correlation_with_target.sort_values(ascending=False)
 
-# Sort feature importances
-sorted_indices = np.argsort(feature_importances)[::-1]
-sorted_importances = feature_importances[sorted_indices]
-sorted_feature_names = [feature_names[i] for i in sorted_indices]
+# Ensure correlation_with_target is a Series
+if isinstance(correlation_with_target, pd.Series):
+    # Convert correlation_with_target to a Series
+    correlation_with_target = pd.Series(correlation_with_target.values, index=correlation_with_target.index)
 
-# Plot the effect of top features on the log price
-plt.figure(figsize=(10, 6))
-plt.bar(range(len(feature_names)), sorted_importances)
-plt.xlabel('Feature')
-plt.ylabel('Importance')
-plt.title('Feature Importances')
-plt.xticks(range(len(feature_names)), sorted_feature_names, rotation=90, ha='right')
-plt.tight_layout()
-plt.show()
+    # Plot the dependency of features on the target variable with x and y axes switched
+    plt.figure(figsize=(12, 8))
+    sns.barplot(x=correlation_with_target.index, y=correlation_with_target.values, color='blue')
+    plt.xlabel('Feature')
+    plt.ylabel('Absolute Correlation Coefficient')
+    plt.title('Dependency of Log Price on Features')
+    plt.grid(axis='y')
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability if needed
+    plt.show()
+else:
+    print("Error: correlation_with_target is not a Series.")

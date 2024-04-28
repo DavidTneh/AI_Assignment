@@ -58,36 +58,20 @@ predicted_prices = pd.Series(predictions).apply(lambda x: round(np.exp(x), 2))
 # Convert actual log prices back to actual prices for comparison
 actual_prices = pd.Series(y_test).apply(lambda x: round(np.exp(x), 2)).reset_index(drop=True)
 
-# Select additional details to display with the actual and predicted prices
-additional_details = df_selected.loc[y_test.index, ['city', 'property_type', 'room_type']].reset_index(drop=True)
-
-# Create a DataFrame with actual and predicted prices and additional details
-results_df = pd.concat([additional_details, actual_prices, predicted_prices], axis=1)
-results_df.columns = ['City', 'Property Type', 'Room Type', 'Actual Price (USD)', 'Predicted Price (USD)']
-
-# Display the first few rows of the results DataFrame
-print(results_df.head())
-
-# Assuming 'actual_prices' and 'predicted_prices' are the Series or lists of actual and predicted prices
-# Ensure these variables are defined in your code before running this snippet
-# Calculate Mean Squared Error (MSE)
-
 mse = mean_squared_error(y_test, predictions)
-print('Mean Squared Error:', mse)
-
-# Calculate R-squared (R2)
 r2 = rf.score(X_test, y_test)
-print('R-squared (R2):', r2)
-
-
-
-
-# Scatter plot of actual vs. predicted prices
+# Plotting R-squared and MSE
 plt.figure(figsize=(10, 6))
-plt.scatter(y_test, predictions, color='blue', alpha=0.5)
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], color='red', linestyle='--', lw=2)
-plt.xlabel('Actual Prices')
-plt.ylabel('Predicted Prices')
-plt.title('Accuracy of price prediction')
+
+# Plot R-squared
+plt.bar(['R-squared'], [r2], color='blue', alpha=0.5, label='R-squared')
+
+# Plot MSE
+plt.bar(['Mean Squared Error'], [mse], color='red', alpha=0.5, label='Mean Squared Error')
+
+plt.xlabel('Metrics')
+plt.ylabel('Value')
+plt.title('Evaluation Metrics')
+plt.legend()
 plt.grid(True)
 plt.show()
