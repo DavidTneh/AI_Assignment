@@ -74,10 +74,6 @@ results_df.columns = ['City', 'Property Type', 'Room Type', 'Actual Price (USD)'
 # Display the first few rows of the results DataFrame
 print(results_df.head())
 
-# Assuming 'actual_prices' and 'predicted_prices' are the Series or lists of actual and predicted prices
-# Ensure these variables are defined in your code before running this snippet
-# Calculate Mean Squared Error (MSE)
-
 mse = mean_squared_error(y_test, predictions)
 print('Mean Squared Error:', mse)
 

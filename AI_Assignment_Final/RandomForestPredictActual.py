@@ -79,9 +79,6 @@ print('Mean Squared Error:', mse)
 r2 = rf.score(X_test, y_test)
 print('R-squared (R2):', r2)
 
-
-
-
 # Scatter plot of actual vs. predicted prices
 plt.figure(figsize=(10, 6))
 plt.scatter(y_test, predictions, color='blue', alpha=0.5)
